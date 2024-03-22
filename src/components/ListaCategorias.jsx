@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { alertaSuccess, alertaError, alertaWarning } from '../functions';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate } from "react-router-dom";
-import moment from 'moment';
+
 
 const ListaCategorias = () => {
     const url = 'https://api.escuelajs.co/api/v1/categories';
@@ -15,7 +15,7 @@ const ListaCategorias = () => {
     const [titleModal, setTitleModal] = useState('');
     const [operation, setOperation] = useState(1);
 
-    const openModal = (operation, id, name, image) => {
+    const openModal = (operation, id, name) => {
         setId('');
         setName('');
         setImage('');
@@ -26,7 +26,7 @@ const ListaCategorias = () => {
             setTitleModal('Editar Producto');
             setId(id);
             setName(name);
-            setImage(image);
+
             setOperation(2);
         }
     }
@@ -65,8 +65,6 @@ const ListaCategorias = () => {
 
         if (name === '') {
             alertaWarning('Escriba el nombre de la categoria', 'name');
-        } else if (image === '') {
-            alertaWarning('seleccione una imagen', 'image');
         } else {
             payload = {
                 name: name,
@@ -106,10 +104,6 @@ const ListaCategorias = () => {
             console.log(error);
         });
     }
-
-    const iniciotHandler = () => {
-        navigate('/');
-    }
     const getDatos = async () => {
         const response = await axios.get(url);
         setCategorias(response.data);
@@ -119,42 +113,73 @@ const ListaCategorias = () => {
         getDatos();
     });
     return (
-        <div className='row mt-3'>
-            <div className='col-12 col-lg-8 offset-0 offset-lg-2'>
-                <div className='table-responsive'>
-                    <table className='table table-bordered'>
-                        <thead>
-                            <tr>
-                                <th>#</th>                                
-                                <th>Categoría</th>
-                                <th>Imagen</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody className='table-group-divider'>
-                            {
-                                categorias.map((item) => (
-                                    <tr key={item.id}>
-                                        <td>{i + 1}</td>                                        
-                                        <td>{item.name}</td>
-                                        <td><img src={item.image}></img></td>
-                                        <td>
-                                            <button onClick={() => openModal(2, item.id, item.name,item.image)} className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalProducts'>
-                                                <i className='fa-solid fa-edit' />
-                                            </button>
-                                            <button onClick={() => deleteCategoria(item.id)} className='btn btn-danger'>
-                                                <i className='fa-solid fa-trash' />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
+        <div className='App'>
+            <div className='row mt-3'>
+                <div className='col-12 col-lg-8 offset-0 offset-lg-2'>
+                    <div className='table-responsive'>
+                        <table className='table table-striped table-dark'>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Categoría</th>
+                                    <th>Imagen</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody className='table-group-divider'>
+                                {
+                                    categorias.map((categorias,i) => (
+                                        <tr key={categorias.id}>
+                                            <td>{i + 1}</td>
+                                            <td>{categorias.name}</td>
+                                            <td><img src={categorias.image} className="img-thumbnail   rounded w-50"  alt='Aavatar' ></img></td>
+                                            <td>
+                                                <button onClick={() => openModal(2, categorias.id, categorias.name)} className='btn btn-warning' data-bs-toggle='modal' data-bs-target='#modalProducts'>
+                                                    <i className='fa-solid fa-edit' />Edit
+                                                </button>
+                                                <button onClick={() => deleteCategoria(categorias.id)} className='btn btn-danger'>
+                                                    <i className='fa-solid fa-trash' />Del
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id='modalProducts' className='modal fade' aria-hidden='true'>
+                <div className='modal-dialog'>
+                    <div className='modal-content'>
+                        <div className='modal-header'>
+                            <label className='h5'>{titleModal}</label>
+                            <button type='button' className='btn-close' data-bs-dismiss='modal' aria-label='cloase' />
+                        </div>
+                        <div className='modal-body'>
+                            <input type='hidden' id='id' />
+                            <div className='input-group mb-3'>
+                                <span className='input-group-text'><i className='fa-solid fa-gift' /></span>
+                                <input type='text' id='name' className='form-control' placeholder='name' value={name} onChange={(e) => setName(e.target.value)} />
+                            </div>                           
+                           
+                            <div className='input-group mb-3'>
+                                <span className='input-group-text'><i className='fa-solid fa-dollar-sign' /></span>
+                                <input type='File' id='image' className='form-control' placeholder='image' value={image} onChange={(e) => setImage(e.target.value)} />
+                            </div>
+                        </div>
+                        <div className='modal-footer'>
+                            <button onClick={() => validar()} className='btn btn-success'>
+                                <i className='fa-solid fa-floppy-disk' /> Guardar
+                            </button>
+                            <button id='btnCerrarModal' className='btn btn-secondary' data-bs-dismiss='modal'>
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
     );
 
 }

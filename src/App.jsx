@@ -1,15 +1,11 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import { Form, Button, Alert } from 'react-bootstrap';
+//import { Form, Button, Alert } from 'react-bootstrap';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import { alertaSuccess, alertaError, alertaWarning } from '../functions';
-import './App.css'
+//import { alertaSuccess, alertaError, alertaWarning } from '../functions';
 import ListaCategorias from './components/ListaCategorias';
+import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+function App() { 
   return (
     <BrowserRouter>
     <Routes>
